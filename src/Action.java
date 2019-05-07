@@ -1,4 +1,4 @@
 public interface Action {
-  Float sufferingCreated(Context context);
-  Float optionality(Context context);
+  Float getSufferingCreated(Context context);
+  Float getOptionality(Context context);
 }
