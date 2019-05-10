@@ -6,10 +6,15 @@ public class EthicalQuestion {
     Double goodFaithEstimateOfSufferingCreated = possibleAction.getGoodFaithEstimateOfSufferingCreated(context);
     Double goodFaithEstimateOfOptionality = possibleAction.getGoodFaithEstimateOfOptionality(context);
 
-    if (goodFaithEstimateOfSufferingCreated <= MagicConstants.AS_CLOSE_TO_ZERO_AS_CAN_BE_DETERMINED) {
+    boolean veryCloseToZeroSuffering = (goodFaithEstimateOfSufferingCreated <= MagicConstants.AS_CLOSE_TO_ZERO_AS_CAN_BE_DETERMINED);
+    boolean littleBitOfSuffering = (!veryCloseToZeroSuffering && goodFaithEstimateOfSufferingCreated <= MagicConstants.MORE_THAN_A_LITTLE_BIT);
+
+    boolean notNecessary = goodFaithEstimateOfOptionality >= MagicConstants.MORE_THAN_A_LITTLE_BIT;
+
+    if (veryCloseToZeroSuffering) {
       return Frequency.WHENEVER_ONE_WANTS;
-    } else if (goodFaithEstimateOfSufferingCreated > MagicConstants.AS_CLOSE_TO_ZERO_AS_CAN_BE_DETERMINED && goodFaithEstimateOfSufferingCreated <= MagicConstants.MORE_THAN_A_LITTLE_BIT) {
-      if (goodFaithEstimateOfOptionality >= MagicConstants.MORE_THAN_A_LITTLE_BIT) {
+    } else if (littleBitOfSuffering) {
+      if (notNecessary) {
         return Frequency.LESS_OFTEN;
       } else {
         return Frequency.WHENEVER_ONE_HAS_TO;
