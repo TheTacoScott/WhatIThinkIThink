@@ -1,55 +1,90 @@
-import java.util.List;
-
 public class EthicalQuestion {
 
-  public Frequency shouldOnePerformAction(FutureAction possibleAction, Context context) {
-    Double goodFaithEstimateOfSufferingCreated = possibleAction.getGoodFaithEstimateOfSufferingCreated(context);
-    Double goodFaithEstimateOfOptionality = possibleAction.getGoodFaithEstimateOfOptionality(context);
-
-    boolean veryCloseToZeroSuffering = (goodFaithEstimateOfSufferingCreated <= MagicConstants.AS_CLOSE_TO_ZERO_AS_CAN_BE_DETERMINED);
-    boolean littleBitOfSuffering = (!veryCloseToZeroSuffering && goodFaithEstimateOfSufferingCreated <= MagicConstants.MORE_THAN_A_LITTLE_BIT);
-
-    boolean notNecessary = goodFaithEstimateOfOptionality >= MagicConstants.MORE_THAN_A_LITTLE_BIT;
-
-    if (veryCloseToZeroSuffering) {
-      return Frequency.WHENEVER_ONE_WANTS;
-    } else if (littleBitOfSuffering) {
-      if (notNecessary) {
-        return Frequency.LESS_OFTEN;
-      } else {
-        return Frequency.WHENEVER_ONE_HAS_TO;
-      }
-    } else  {
-      return Frequency.AS_CLOSE_TO_NEVER_AS_ONE_CAN;
-    }
+  public static Double getActionBadness(Action action) {
+    return action.getSufferingCreated();
   }
 
-  public Double getActionWrongness(Action action, Context context) {
-    return action.getSufferingCreated(context) * action.getOptionality(context);
+  public static Double getActionWrongness(Action action) {
+    return getActionBadness(action) * action.getOptionality();
   }
 
-  public Double getDecisionWrongness(Decision decision) {
-    return getActionWrongness(decision.getAction(),decision.getContext()) * decision.getAwarenesss();
+  public static Double getBehaviorBadness(Action action, Double actionFrequency) {
+    return getActionWrongness(action) * actionFrequency;
   }
 
-  //basic sigmoid curve with 0.0 origin that intersects 1,1
-  public static Double getDecisionWeight(Double unitInterval) {
-    return 3 * Math.pow(unitInterval,2) - Math.pow(2*unitInterval,3);
+  public static Double getBehaviorWrongness(Action action, Double actionFrequency, Awareness awareness) {
+    return getBehaviorBadness(action,actionFrequency) * awareness.getOptionalityAwareness() * awareness.getSufferingCreatedAwareness();
   }
 
-  //todo: is this right? Basically 0% chance it is.
-  public Double getPersonBadness(Life life) {
-    double badness = 0.0D;
-    List<Decision> decisions = life.getDecisions();
-    for (int i = 0, decisionsSize = decisions.size(); i < decisionsSize; i++) {
-      Decision decision = decisions.get(i);
-      Double decisionWrongness = getDecisionWrongness(decision);
 
-      Double decisionRecentness = (double) (i / decisionsSize);
-      Double decisionWeight = getDecisionWeight(decisionRecentness);
+  public static void main(String[] args) {
+    Action maxSufferingMaxOptionality = new Action(1.0,1.0);
+    assert getActionBadness(maxSufferingMaxOptionality) == 1.0;
+    assert getActionWrongness(maxSufferingMaxOptionality) == 1.0;
+    assert getBehaviorBadness(maxSufferingMaxOptionality,0.0) == 0;
+    assert getBehaviorBadness(maxSufferingMaxOptionality,1.0) == 1.0;
 
-      badness += (decisionWrongness * decisionWeight);
-    }
-    return badness / decisions.size();
+    Action minSufferingMinOptionality = new Action(0.0,0.0);
+    assert getActionBadness(minSufferingMinOptionality) == 0.0;
+    assert getActionWrongness(minSufferingMinOptionality) == 0.0;
+    assert getBehaviorBadness(minSufferingMinOptionality,0.0) == 0.0;
+    assert getBehaviorBadness(minSufferingMinOptionality,1.0) == 0.0;
+
+    Action maxSufferingMinOptionality = new Action(1.0,0.0);
+    assert getActionBadness(maxSufferingMinOptionality) == 1.0;
+    assert getActionWrongness(maxSufferingMinOptionality) == 0.0;
+    assert getBehaviorBadness(maxSufferingMinOptionality,0.0) == 0.0;
+    assert getBehaviorBadness(maxSufferingMinOptionality,1.0) == 0.0;
+
+    Action minSufferingMaxOptionality = new Action(0.0,1.0);
+    assert getActionBadness(minSufferingMaxOptionality) == 0.0;
+    assert getActionWrongness(minSufferingMaxOptionality) == 0.0;
+    assert getBehaviorBadness(minSufferingMaxOptionality,0.0) == 0.0;
+    assert getBehaviorBadness(minSufferingMaxOptionality,1.0) == 0.0;
+
+
+    Awareness maxAwareness = new Awareness(1.0,1.0);
+    assert getBehaviorWrongness(maxSufferingMaxOptionality,0.0,maxAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMaxOptionality,1.0,maxAwareness) == 1.0;
+    assert getBehaviorWrongness(minSufferingMinOptionality,0.0,maxAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMinOptionality,1.0,maxAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMinOptionality,0.0,maxAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMinOptionality,1.0,maxAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMaxOptionality,0.0,maxAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMaxOptionality,1.0,maxAwareness) == 0.0;
+
+
+    Awareness minAwareness = new Awareness(0.0,0.0);
+    assert getBehaviorWrongness(maxSufferingMaxOptionality,0.0,minAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMaxOptionality,1.0,minAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMinOptionality,0.0,minAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMinOptionality,1.0,minAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMinOptionality,0.0,minAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMinOptionality,1.0,minAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMaxOptionality,0.0,minAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMaxOptionality,1.0,minAwareness) == 0.0;
+
+    Awareness maxSufferingAwarenessMinOptionalityAwareness = new Awareness(1.0,0.0);
+    assert getBehaviorWrongness(maxSufferingMaxOptionality,0.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMaxOptionality,1.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMinOptionality,0.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMinOptionality,1.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMinOptionality,0.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMinOptionality,1.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMaxOptionality,0.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMaxOptionality,1.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
+
+    Awareness minSufferingAwarenessMaxOptionalityAwareness = new Awareness(0.0,1.0);
+    assert getBehaviorWrongness(maxSufferingMaxOptionality,0.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMaxOptionality,1.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMinOptionality,0.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMinOptionality,1.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMinOptionality,0.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(maxSufferingMinOptionality,1.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMaxOptionality,0.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
+    assert getBehaviorWrongness(minSufferingMaxOptionality,1.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
+
   }
 }
+
+
