@@ -13,77 +13,32 @@ public class EthicalQuestion {
   }
 
   public static Double getBehaviorWrongness(Action action, Double actionFrequency, Awareness awareness) {
-    return getBehaviorBadness(action,actionFrequency) * awareness.getOptionalityAwareness() * awareness.getSufferingCreatedAwareness();
+    return getBehaviorBadness(action, actionFrequency) * awareness.getOptionalityAwareness() * awareness.getSufferingCreatedAwareness();
   }
 
 
   public static void main(String[] args) {
-    Action maxSufferingMaxOptionality = new Action(1.0,1.0);
-    assert getActionBadness(maxSufferingMaxOptionality) == 1.0;
-    assert getActionWrongness(maxSufferingMaxOptionality) == 1.0;
-    assert getBehaviorBadness(maxSufferingMaxOptionality,0.0) == 0;
-    assert getBehaviorBadness(maxSufferingMaxOptionality,1.0) == 1.0;
 
-    Action minSufferingMinOptionality = new Action(0.0,0.0);
-    assert getActionBadness(minSufferingMinOptionality) == 0.0;
-    assert getActionWrongness(minSufferingMinOptionality) == 0.0;
-    assert getBehaviorBadness(minSufferingMinOptionality,0.0) == 0.0;
-    assert getBehaviorBadness(minSufferingMinOptionality,1.0) == 0.0;
+    for (double suffering = 0.0; suffering <= 1.0; suffering += 0.1) {
+      if (suffering == 0.0) { continue; }
+      for (double optionality = 0.0; optionality <= 1.0; optionality += 0.1) {
+        if (optionality == 0.0) { continue; }
+        for (double sufferingAwareness = 0.0; sufferingAwareness <= 1.0; sufferingAwareness += 0.1) {
+          for (double optionalityAwareness = 0.0; optionalityAwareness <= 1.0; optionalityAwareness += 0.1) {
+            for (double frequency = 0.0; frequency <= 1.0; frequency += 0.1) {
 
-    Action maxSufferingMinOptionality = new Action(1.0,0.0);
-    assert getActionBadness(maxSufferingMinOptionality) == 1.0;
-    assert getActionWrongness(maxSufferingMinOptionality) == 0.0;
-    assert getBehaviorBadness(maxSufferingMinOptionality,0.0) == 0.0;
-    assert getBehaviorBadness(maxSufferingMinOptionality,1.0) == 0.0;
+              Action testAction = new Action(suffering, optionality);
+              Awareness testAwareness = new Awareness(sufferingAwareness, optionalityAwareness);
 
-    Action minSufferingMaxOptionality = new Action(0.0,1.0);
-    assert getActionBadness(minSufferingMaxOptionality) == 0.0;
-    assert getActionWrongness(minSufferingMaxOptionality) == 0.0;
-    assert getBehaviorBadness(minSufferingMaxOptionality,0.0) == 0.0;
-    assert getBehaviorBadness(minSufferingMaxOptionality,1.0) == 0.0;
+//              assert getActionBadness(testAction) > 0;
+//              assert getActionWrongness(testAction) == 1.0;
+//              assert getBehaviorBadness(testAction, frequency) == 0;
 
-
-    Awareness maxAwareness = new Awareness(1.0,1.0);
-    assert getBehaviorWrongness(maxSufferingMaxOptionality,0.0,maxAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMaxOptionality,1.0,maxAwareness) == 1.0;
-    assert getBehaviorWrongness(minSufferingMinOptionality,0.0,maxAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMinOptionality,1.0,maxAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMinOptionality,0.0,maxAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMinOptionality,1.0,maxAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMaxOptionality,0.0,maxAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMaxOptionality,1.0,maxAwareness) == 0.0;
-
-
-    Awareness minAwareness = new Awareness(0.0,0.0);
-    assert getBehaviorWrongness(maxSufferingMaxOptionality,0.0,minAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMaxOptionality,1.0,minAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMinOptionality,0.0,minAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMinOptionality,1.0,minAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMinOptionality,0.0,minAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMinOptionality,1.0,minAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMaxOptionality,0.0,minAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMaxOptionality,1.0,minAwareness) == 0.0;
-
-    Awareness maxSufferingAwarenessMinOptionalityAwareness = new Awareness(1.0,0.0);
-    assert getBehaviorWrongness(maxSufferingMaxOptionality,0.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMaxOptionality,1.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMinOptionality,0.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMinOptionality,1.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMinOptionality,0.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMinOptionality,1.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMaxOptionality,0.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMaxOptionality,1.0,maxSufferingAwarenessMinOptionalityAwareness) == 0.0;
-
-    Awareness minSufferingAwarenessMaxOptionalityAwareness = new Awareness(0.0,1.0);
-    assert getBehaviorWrongness(maxSufferingMaxOptionality,0.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMaxOptionality,1.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMinOptionality,0.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMinOptionality,1.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMinOptionality,0.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(maxSufferingMinOptionality,1.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMaxOptionality,0.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
-    assert getBehaviorWrongness(minSufferingMaxOptionality,1.0,minSufferingAwarenessMaxOptionalityAwareness) == 0.0;
-
+            }
+          }
+        }
+      }
+    }
   }
 }
 
