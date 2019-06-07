@@ -1,21 +1,28 @@
+import java.math.BigDecimal;
+
 public class Awareness {
-  private Double sufferingCreatedAwareness;
-  private Double optionalityAwareness;
-  public Awareness(Double sufferingCreatedAwareness, Double optionalityAwareness) {
-    assert sufferingCreatedAwareness >= 0;
-    assert sufferingCreatedAwareness <= 1;
+  private BigDecimal sufferingCreatedAwareness;
+  private BigDecimal optionalityAwareness;
+  public Awareness(BigDecimal sufferingCreatedAwareness, BigDecimal optionalityAwareness) {
+    assert sufferingCreatedAwareness.compareTo(BigDecimal.ZERO) >= 0;
+    assert sufferingCreatedAwareness.compareTo(BigDecimal.ONE) <= 1;
     this.sufferingCreatedAwareness = sufferingCreatedAwareness;
 
-    assert optionalityAwareness >= 0;
-    assert optionalityAwareness <= 1;
+//    assert optionalityAwareness >= 0;
+//    assert optionalityAwareness <= 1;
     this.optionalityAwareness = optionalityAwareness;
   }
 
-  public Double getSufferingCreatedAwareness() {
+  public BigDecimal getSufferingCreatedAwareness() {
     return sufferingCreatedAwareness;
   }
 
-  public Double getOptionalityAwareness() {
+  public BigDecimal getOptionalityAwareness() {
     return optionalityAwareness;
+  }
+
+  @Override
+  public String toString() {
+    return "SufferingAwareness: " + this.getSufferingCreatedAwareness() + " OptionalityAwareness: " + this.getOptionalityAwareness();
   }
 }
