@@ -6,12 +6,12 @@ public class Action {
 
 
   public Action(BigDecimal sufferingCreated, BigDecimal optionality) {
-//    assert sufferingCreated >= 0.0;
-//    assert sufferingCreated <= 1.0;
+    assert sufferingCreated.compareTo(BigDecimal.ZERO) > 0;
+    assert sufferingCreated.compareTo(BigDecimal.ONE) < 0;
     this.sufferingCreated = sufferingCreated;
 
-//    assert optionality >= 0.0;
-//    assert optionality <= 1.0;
+    assert optionality.compareTo(BigDecimal.ZERO) > 0;
+    assert optionality.compareTo(BigDecimal.ONE) < 0;
     this.optionality = optionality;
   }
 

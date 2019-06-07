@@ -4,12 +4,12 @@ public class Awareness {
   private BigDecimal sufferingCreatedAwareness;
   private BigDecimal optionalityAwareness;
   public Awareness(BigDecimal sufferingCreatedAwareness, BigDecimal optionalityAwareness) {
-    assert sufferingCreatedAwareness.compareTo(BigDecimal.ZERO) >= 0;
-    assert sufferingCreatedAwareness.compareTo(BigDecimal.ONE) <= 1;
+    assert sufferingCreatedAwareness.compareTo(BigDecimal.ZERO) > 0;
+    assert sufferingCreatedAwareness.compareTo(BigDecimal.ONE) < 0;
     this.sufferingCreatedAwareness = sufferingCreatedAwareness;
 
-//    assert optionalityAwareness >= 0;
-//    assert optionalityAwareness <= 1;
+    assert optionalityAwareness.compareTo(BigDecimal.ZERO) > 0;
+    assert optionalityAwareness.compareTo(BigDecimal.ONE) < 0;
     this.optionalityAwareness = optionalityAwareness;
   }
 

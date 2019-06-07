@@ -24,6 +24,12 @@ public class EthicalQuestion {
             .multiply(awareness.getSufferingCreatedAwareness(),mc);
   }
 
+  public static void test(boolean condition,String group, String name) {
+    if (!condition) {
+      System.out.println(group + " validate " + name);
+      System.exit(1);
+    }
+  }
 
   public static void main(String[] args) {
     BigDecimal increment = new BigDecimal(0.1D, mc);
@@ -47,7 +53,42 @@ public class EthicalQuestion {
               System.out.println("\t  actionWrongness: " + actionWrongness);
               System.out.println("\t  behaviorBadness: " + behaviorBadness);
               System.out.println("\tbehaviorWrongness: " + behaviorWrongness);
-              System.out.print("");
+
+              String conditionGroup = "Zero suffering";
+              if (testAction.getSufferingCreated().compareTo(BigDecimal.ZERO) == 0) {
+                test(actionBadness.compareTo(BigDecimal.ZERO) == 0,conditionGroup, "actionBadness == 0");
+                test(actionWrongness.compareTo(BigDecimal.ZERO) == 0,conditionGroup,"actionWrongness == 0");
+                test(behaviorBadness.compareTo(BigDecimal.ZERO) == 0,conditionGroup,"behaviorBadness == 0");
+                test(behaviorWrongness.compareTo(BigDecimal.ZERO) == 0,conditionGroup,"behaviorWrongness == 0");
+                continue;
+              }
+
+              conditionGroup = "Some suffering, Zero frequency";
+              if (frequency.compareTo(BigDecimal.ZERO) == 0) {
+                test(behaviorBadness.compareTo(BigDecimal.ZERO) == 0,conditionGroup,"behaviorBadness == 0");
+                test(behaviorWrongness.compareTo(BigDecimal.ZERO) == 0,conditionGroup,"behaviorWrongness == 0");
+                continue;
+              }
+
+              conditionGroup = "Some suffering/frequency. Zero optionality)";
+              if (testAction.getOptionality().compareTo(BigDecimal.ZERO) == 0) {
+                test(actionWrongness.compareTo(BigDecimal.ZERO) == 0,conditionGroup,"actionWrongness == 0");
+                continue;
+              }
+
+              conditionGroup = "Some suffering/frequency/optionality. Zero awareness)";
+              if (testAwareness.getSufferingCreatedAwareness().compareTo(BigDecimal.ZERO) == 0 || testAwareness.getOptionalityAwareness().compareTo(BigDecimal.ZERO) == 0) {
+                test(behaviorWrongness.compareTo(BigDecimal.ZERO) == 0,conditionGroup,"actionWrongness == 0");
+                continue;
+              }
+
+              conditionGroup = "Some suffering/frequency/optionality/awareness)";
+              test(actionBadness.compareTo(BigDecimal.ZERO) > 0,conditionGroup,"actionBadness > 0");
+              test(actionWrongness.compareTo(BigDecimal.ZERO) > 0,conditionGroup,"actionWrongness > 0");
+              test(behaviorBadness.compareTo(BigDecimal.ZERO) > 0,conditionGroup,"behaviorBadness > 0");
+              test(behaviorWrongness.compareTo(BigDecimal.ZERO) > 0,conditionGroup,"behaviorWrongness > 0");
+
+              System.out.println();
             }
           }
         }
