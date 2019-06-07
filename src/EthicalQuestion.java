@@ -48,7 +48,7 @@ public class EthicalQuestion {
               BigDecimal behaviorBadness = getBehaviorBadness(testAction,frequency);
               BigDecimal behaviorWrongness = getBehaviorWrongness(testAction,frequency,testAwareness);
 
-              System.out.println(testAction + " -> " + testAwareness + " -> Freq: " + frequency);
+              System.out.println(testAction + " " + testAwareness + " Frequency: " + frequency);
               System.out.println("\t    actionBadness: " + actionBadness);
               System.out.println("\t  actionWrongness: " + actionWrongness);
               System.out.println("\t  behaviorBadness: " + behaviorBadness);
